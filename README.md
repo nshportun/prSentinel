@@ -4,7 +4,7 @@
 
 Detect PII leakage, secret exposure, schema drift, and data-quality issues in pull requests **before they reach production**.
 
-[![Tests](https://github.com/natebell510/pr-sentinel/workflows/Tests/badge.svg)](https://github.com/natebell510/pr-sentinel/actions)
+[![Tests](https://github.com/nshportun/prSentinel/workflows/Tests/badge.svg)](https://github.com/nshportun/prSentinel/actions)
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 
 ## Why PR Sentinel?
@@ -68,7 +68,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Run PR Sentinel
-        uses: natebell510/pr-sentinel@v0.1.0
+        uses: nshportun/prSentinel@v0.1.0
         with:
           model-provider: anthropic
           model-id: claude-3-5-sonnet-20241022
@@ -164,8 +164,8 @@ customer_id,email,age
 ### Setup
 
 ```bash
-git clone https://github.com/natebell510/pr-sentinel.git
-cd pr-sentinel
+git clone https://github.com/nshportun/prSentinel.git
+cd prSentinel
 npm install
 npm run build
 ```
@@ -272,8 +272,8 @@ Apache License 2.0 — See [LICENSE](LICENSE)
 
 ## Support & Feedback
 
-- **Issues**: [GitHub Issues](https://github.com/natebell510/pr-sentinel/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/natebell510/pr-sentinel/discussions)
+- **Issues**: [GitHub Issues](https://github.com/nshportun/prSentinel/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/nshportun/prSentinel/discussions)
 - **Security**: [SECURITY.md](SECURITY.md)
 
 ---

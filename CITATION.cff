@@ -5,12 +5,12 @@ subtitle: "AI-Powered GitHub Action for ML/Data-Quality Checks"
 message: >-
   If you use this software, please cite it using the metadata from this file.
 authors:
-  - family-names: "Nate"
-    given-names: "Bell"
+  - family-names: "nshportun"
+    given-names: "Developer"
     orcid: "https://orcid.org/0000-0000-0000-0000"
-repository-code: "https://github.com/natebell510/pr-sentinel"
-repository-artifact: "https://github.com/marketplace/actions/pr-sentinel"
-url: "https://github.com/natebell510/pr-sentinel"
+repository-code: "https://github.com/nshportun/prSentinel"
+repository-artifact: "https://github.com/marketplace/actions/prSentinel"
+url: "https://github.com/nshportun/prSentinel"
 license: "Apache-2.0"
 version: "0.1.0"
 date-released: "2026-07-23"
@@ -24,8 +24,8 @@ keywords:
 preferred-citation:
   type: software
   authors:
-    - family-names: "Nate"
-      given-names: "Bell"
+    - family-names: "nshportun"
+      given-names: "Developer"
   title: "PR Sentinel — AI-Powered GitHub Action for ML/Data-Quality Checks"
   year: "2026"
-  url: "https://github.com/natebell510/pr-sentinel"
+  url: "https://github.com/nshportun/prSentinel"
