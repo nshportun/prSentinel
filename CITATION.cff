@@ -1,0 +1,31 @@
+cff-version: 1.2.0
+type: software
+title: "PR Sentinel"
+subtitle: "AI-Powered GitHub Action for ML/Data-Quality Checks"
+message: >-
+  If you use this software, please cite it using the metadata from this file.
+authors:
+  - family-names: "Nate"
+    given-names: "Bell"
+    orcid: "https://orcid.org/0000-0000-0000-0000"
+repository-code: "https://github.com/natebell510/pr-sentinel"
+repository-artifact: "https://github.com/marketplace/actions/pr-sentinel"
+url: "https://github.com/natebell510/pr-sentinel"
+license: "Apache-2.0"
+version: "0.1.0"
+date-released: "2026-07-23"
+keywords:
+  - "github-actions"
+  - "machine-learning"
+  - "data-quality"
+  - "pii-detection"
+  - "schema-validation"
+  - "ci-cd"
+preferred-citation:
+  type: software
+  authors:
+    - family-names: "Nate"
+      given-names: "Bell"
+  title: "PR Sentinel — AI-Powered GitHub Action for ML/Data-Quality Checks"
+  year: "2026"
+  url: "https://github.com/natebell510/pr-sentinel"

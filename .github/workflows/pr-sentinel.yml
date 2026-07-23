@@ -1,0 +1,54 @@
+name: PR Sentinel Checks
+
+on:
+  pull_request:
+    paths:
+      - "**.csv"
+      - "**.json"
+      - "**.jsonl"
+      - "**.parquet"
+      - "**.ipynb"
+      - "src/**"
+      - "package.json"
+
+jobs:
+  pr-sentinel:
+    runs-on: ubuntu-latest
+    name: ML/Data Quality Checks
+
+    permissions:
+      contents: read
+      security-events: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Run PR Sentinel
+        uses: ./
+        with:
+          model-provider: "anthropic"
+          model-id: "claude-3-5-sonnet-20241022"
+          checks: "pii,secrets,schema,notebook,license"
+          severity-threshold: "warning"
+          output-format: "sarif"
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+
+      - name: Upload SARIF report
+        uses: github/codeql-action/upload-sarif@v2
+        if: always()
+        with:
+          sarif_file: sarif-report.sarif

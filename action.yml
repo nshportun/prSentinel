@@ -1,0 +1,69 @@
+name: "PR Sentinel — ML/Data Quality Checks"
+description: "AI-powered GitHub Action for detecting PII, schema drift, and data-quality issues in diffs"
+author: "PR Sentinel"
+
+inputs:
+  model-provider:
+    description: "LLM provider: openai, anthropic, bedrock, or ollama"
+    required: true
+    default: "anthropic"
+  model-id:
+    description: "Model identifier (e.g., claude-opus-4-1, gpt-4-turbo)"
+    required: true
+  aws-region:
+    description: "AWS region for Bedrock (if provider=bedrock)"
+    required: false
+    default: "us-east-1"
+  severity-threshold:
+    description: "Minimum severity to report: info, warning, error"
+    required: false
+    default: "warning"
+  checks:
+    description: "Comma-separated list of checks to run: pii,secrets,schema,notebook,license"
+    required: false
+    default: "pii,secrets,schema"
+  output-format:
+    description: "Output format: sarif, jsonl, or both"
+    required: false
+    default: "sarif"
+  github-token:
+    description: "GitHub token for fetching PR diff"
+    required: true
+
+outputs:
+  sarif-file:
+    description: "Path to generated SARIF file (if output-format includes sarif)"
+  jsonl-file:
+    description: "Path to generated JSONL evidence log"
+  issue-count:
+    description: "Total number of issues found"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Setup Node
+      uses: actions/setup-node@v4
+      with:
+        node-version: "20"
+
+    - name: Install dependencies
+      run: npm ci
+      shell: bash
+      working-directory: ${{ github.action_path }}
+
+    - name: Run PR Sentinel checks
+      run: |
+        node ${{ github.action_path }}/dist/index.js
+      shell: bash
+      env:
+        INPUT_MODEL_PROVIDER: ${{ inputs.model-provider }}
+        INPUT_MODEL_ID: ${{ inputs.model-id }}
+        INPUT_AWS_REGION: ${{ inputs.aws-region }}
+        INPUT_SEVERITY_THRESHOLD: ${{ inputs.severity-threshold }}
+        INPUT_CHECKS: ${{ inputs.checks }}
+        INPUT_OUTPUT_FORMAT: ${{ inputs.output-format }}
+        INPUT_GITHUB_TOKEN: ${{ inputs.github-token }}
+
+branding:
+  icon: "shield-alert"
+  color: "blue"

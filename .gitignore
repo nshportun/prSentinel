@@ -1,0 +1,17 @@
+node_modules/
+dist/
+coverage/
+*.log
+.DS_Store
+.env
+.env.local
+*.swp
+*.swo
+*~
+sarif-report.sarif
+evidence-log.jsonl
+.idea/
+.vscode/
+*.iml
+out/
+CLAUDE.md
