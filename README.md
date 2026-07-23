@@ -4,7 +4,7 @@
 
 Detect PII leakage, secret exposure, schema drift, and data-quality issues in pull requests **before they reach production**.
 
-[![Tests](https://github.com/natebell510/pr-sentinel/workflows/Tests/badge.svg)](https://github.com/natebell510/pr-sentinel/actions)
+[![Tests](https://github.com/nshportun/prSentinel/workflows/Tests/badge.svg)](https://github.com/nshportun/prSentinel/actions)
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 
 ## Why PR Sentinel?
@@ -68,10 +68,10 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Run PR Sentinel
-        uses: natebell510/pr-sentinel@v0.1.0
+        uses: nshportun/prSentinel@v0.1.0
         with:
           model-provider: anthropic
-          model-id: claude-3-5-sonnet-20241022
+          model-id: claude-opus-4-1
           checks: pii,secrets,schema,notebook,license
           severity-threshold: warning
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -90,7 +90,7 @@ jobs:
 | Input | Required | Default | Description |
 |-------|----------|---------|-------------|
 | `model-provider` | Yes | `anthropic` | LLM provider: `anthropic`, `openai`, `bedrock`, or `ollama` |
-| `model-id` | Yes | — | Model identifier (e.g., `claude-3-5-sonnet-20241022`) |
+| `model-id` | Yes | — | Model identifier (e.g., `claude-opus-4-1`) |
 | `checks` | No | `pii,secrets,schema` | Comma-separated checks to run |
 | `severity-threshold` | No | `warning` | Minimum severity: `info`, `warning`, or `error` |
 | `output-format` | No | `sarif` | Output: `sarif`, `jsonl`, or `both` |
@@ -164,7 +164,7 @@ customer_id,email,age
 ### Setup
 
 ```bash
-git clone https://github.com/natebell510/pr-sentinel.git
+git clone https://github.com/nshportun/prSentinel.git
 cd pr-sentinel
 npm install
 npm run build
@@ -250,7 +250,8 @@ Timestamped, structured logs for downstream analysis:
 
 | Model | Est. Cost | Tokens | Notes |
 |-------|-----------|--------|-------|
-| Claude 3.5 Sonnet | $0.05–0.15 | 2K–5K | Recommended; best accuracy |
+| Claude Opus 4.1 | $0.015–0.06 | 2K–5K | Recommended; best accuracy |
+| Claude Sonnet 4.6 | $0.003–0.015 | 2K–5K | Faster, cheaper alternative |
 | GPT-4 Turbo | $0.10–0.20 | 2K–5K | Higher cost; similar accuracy |
 | Bedrock Claude | $0.03–0.10 | 2K–5K | Lower cost; requires AWS |
 | Local Ollama | $0.00 | N/A | Free; requires self-hosting |
@@ -272,8 +273,8 @@ Apache License 2.0 — See [LICENSE](LICENSE)
 
 ## Support & Feedback
 
-- **Issues**: [GitHub Issues](https://github.com/natebell510/pr-sentinel/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/natebell510/pr-sentinel/discussions)
+- **Issues**: [GitHub Issues](https://github.com/nshportun/prSentinel/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/nshportun/prSentinel/discussions)
 - **Security**: [SECURITY.md](SECURITY.md)
 
 ---
