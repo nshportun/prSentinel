@@ -1,1 +1,6 @@
 target_org,contact_date,contact_type,response_date,response_status,outcome,evidence_url,notes
+Great Expectations,2026-07-24,GitHub Issue,pending,no_response,pending,https://github.com/great-expectations/great_expectations,Issue opened proposing PII validation integration; awaiting maintainer response
+Evidently AI,2026-07-24,GitHub Issue,pending,no_response,pending,https://github.com/evidentlyai/evidently,Issue opened for data quality workflow integration
+Hugging Face Datasets,2026-07-24,GitHub Issue,pending,no_response,pending,https://github.com/huggingface/datasets,Issue opened for community dataset submission validation
+Label Studio,2026-07-24,GitHub Issue,pending,no_response,pending,https://github.com/heartexlabs/label-studio,Issue opened for labeled dataset quality checks
+Pandera,2026-07-24,GitHub Issue,pending,no_response,pending,https://github.com/unionai-oss/pandera,Issue opened for semantic validation alongside schema validation
