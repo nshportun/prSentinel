@@ -3,17 +3,9 @@ description: "AI-powered GitHub Action for detecting PII, schema drift, and data
 author: "PR Sentinel"
 
 inputs:
-  model-provider:
-    description: "LLM provider: openai, anthropic, bedrock, or ollama"
-    required: true
-    default: "anthropic"
   model-id:
-    description: "Model identifier (e.g., claude-opus-4-1, gpt-4-turbo)"
+    description: "Model identifier (e.g., claude-opus-4-1)"
     required: true
-  aws-region:
-    description: "AWS region for Bedrock (if provider=bedrock)"
-    required: false
-    default: "us-east-1"
   severity-threshold:
     description: "Minimum severity to report: info, warning, error"
     required: false
@@ -44,7 +36,7 @@ runs:
     - name: Setup Node
       uses: actions/setup-node@v4
       with:
-        node-version: "20"
+        node-version: "24"
 
     - name: Install dependencies
       run: npm ci
@@ -56,9 +48,7 @@ runs:
         node ${{ github.action_path }}/dist/index.js
       shell: bash
       env:
-        INPUT_MODEL_PROVIDER: ${{ inputs.model-provider }}
         INPUT_MODEL_ID: ${{ inputs.model-id }}
-        INPUT_AWS_REGION: ${{ inputs.aws-region }}
         INPUT_SEVERITY_THRESHOLD: ${{ inputs.severity-threshold }}
         INPUT_CHECKS: ${{ inputs.checks }}
         INPUT_OUTPUT_FORMAT: ${{ inputs.output-format }}
