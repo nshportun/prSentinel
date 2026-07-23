@@ -264,9 +264,9 @@ Apache License 2.0 — See [LICENSE](LICENSE)
 ```bibtex
 @software{pr_sentinel_2026,
   title={PR Sentinel: AI-Powered GitHub Action for ML/Data-Quality Checks},
-  author={Bell, Nate},
+  author={nshportun},
   year={2026},
-  url={https://github.com/natebell510/pr-sentinel}
+  url={https://github.com/nshportun/prSentinel}
 }
 ```
 
