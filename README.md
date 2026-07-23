@@ -34,7 +34,7 @@ See [case study](docs/case-study-pii-leakage.md) and [benchmark](docs/benchmark-
 
 ### Core Capabilities
 
-- ✅ **Model-agnostic**: Use Claude, GPT-4, Bedrock, or local Ollama
+- ✅ **Powered by Claude**: Uses Anthropic's latest Claude models for accuracy
 - ✅ **GitHub Security tab integration**: SARIF output for native visibility
 - ✅ **Evidence logging**: JSONL for downstream analysis or S3 ingestion
 - ✅ **Configurable severity**: Filter by info/warning/error
@@ -70,7 +70,6 @@ jobs:
       - name: Run PR Sentinel
         uses: nshportun/prSentinel@v0.1.0
         with:
-          model-provider: anthropic
           model-id: claude-opus-4-1
           checks: pii,secrets,schema,notebook,license
           severity-threshold: warning
@@ -89,7 +88,6 @@ jobs:
 
 | Input | Required | Default | Description |
 |-------|----------|---------|-------------|
-| `model-provider` | Yes | `anthropic` | LLM provider: `anthropic`, `openai`, `bedrock`, or `ollama` |
 | `model-id` | Yes | — | Model identifier (e.g., `claude-opus-4-1`) |
 | `checks` | No | `pii,secrets,schema` | Comma-separated checks to run |
 | `severity-threshold` | No | `warning` | Minimum severity: `info`, `warning`, or `error` |
