@@ -6,8 +6,8 @@ export class SecretScanningCheck implements DataQualityCheck {
   async run(_context: CheckContext, diffChunks: string[]): Promise<Finding[]> {
     const findings: Finding[] = [];
     const patterns = [
-      { regex: /(?:api[_-]?key|apikey)\s*=\s*['""]?([a-zA-Z0-9_\-]+)['""]?/gi, type: "API Key" },
-      { regex: /(?:aws[_-]?secret|secret[_-]?access[_-]?key)\s*=\s*['""]?([a-zA-Z0-9+\/]{40})['""]?/gi, type: "AWS Secret" },
+      { regex: /(?:api[_-]?key|apikey)\s*=\s*['""]?([a-zA-Z0-9_-]+)['""]?/gi, type: "API Key" },
+      { regex: /(?:aws[_-]?secret|secret[_-]?access[_-]?key)\s*=\s*['""]?([a-zA-Z0-9+/]{40})['""]?/gi, type: "AWS Secret" },
       { regex: /github[_-]?token\s*=\s*ghp_[a-zA-Z0-9_]{36}/gi, type: "GitHub Token" },
       { regex: /(?:password|passwd)\s*=\s*['""]?([^'""\s]+)['""]?/gi, type: "Password" },
       { regex: /-----BEGIN RSA PRIVATE KEY-----/gi, type: "RSA Private Key" },

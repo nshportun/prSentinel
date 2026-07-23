@@ -15,7 +15,6 @@ import { SARIFGenerator, JSONLGenerator } from "./output/index.js";
 
 async function run() {
   try {
-    const modelProvider = core.getInput("model-provider") || "anthropic";
     const modelId = core.getInput("model-id");
     const checksInput = core.getInput("checks") || "pii,secrets,schema";
     const outputFormat = core.getInput("output-format") || "sarif";
