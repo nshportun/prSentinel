@@ -15,9 +15,9 @@ export class NotebookSecurityCheck implements DataQualityCheck {
         const nbContent = this.extractNotebookJson(chunk);
         if (!nbContent) continue;
 
-        const cells = nbContent.cells || [];
+        const cells = Array.isArray(nbContent.cells) ? nbContent.cells : [];
         for (let cellIdx = 0; cellIdx < cells.length; cellIdx++) {
-          const cell = cells[cellIdx];
+          const cell = cells[cellIdx] as Record<string, unknown>;
 
           // Check for secrets in cell outputs
           if (cell.cell_type === "code") {
