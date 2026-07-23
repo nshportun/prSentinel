@@ -109,6 +109,7 @@ Outreach mechanics:
    inflated, or unverifiable — false EB-1A evidence causes petition denial.
 
 ## Changelog
+- 2026-07-23: **Phase 3 strategy complete** — Adoption campaign playbook (docs/PHASE-3-OUTREACH.md), expert letter pipeline (docs/EXPERT-LETTER-STRATEGY.md), and target org research guide (docs/TARGET-ORGS-RESEARCH.md) all documented. Initial 5 target orgs entered in adoption_log.csv (Great Expectations, Evidently, Hugging Face, Label Studio, Pandera). Ready for outreach phase.
 - 2026-07-23: **Phase 2 complete** — Case study (docs/case-study-pii-leakage.md) documents real 2024 incident where 47K customer records were exposed; benchmark (docs/benchmark-vs-alternatives.md) quantifies vs CodeQL/Snyk/Copilot. Created 10 "good first issue" tickets (#1-#10) on GitHub to attract external contributors and generate independent commits/evidence.
 - 2026-07-23: **Phase 1 complete** — Core action built: 5 ML/data checks (PII, secrets, schema drift, notebooks, license headers), model-agnostic provider interface (Anthropic implemented), SARIF + JSONL output, ≥85% test coverage, Apache-2.0 licensed, pushed to https://github.com/nshportun/prSentinel.
 - 2026-07-23: Revised to center all phases on major-significance evidence
