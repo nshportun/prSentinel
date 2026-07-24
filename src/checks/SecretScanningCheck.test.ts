@@ -24,7 +24,7 @@ describe("SecretScanningCheck", () => {
   });
 
   it("detects GitHub tokens", async () => {
-    const chunks = ['github_token = "ghp_1234567890123456789012345678901234"'];
+    const chunks = ['github_token = "ghp_12345678901234567890123456789012345678"'];
     const findings = await check.run(
       {
         owner: "test",

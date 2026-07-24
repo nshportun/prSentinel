@@ -1,5 +1,21 @@
 import { CheckContext, DataQualityCheck, Finding } from "./types.js";
 
+interface NotebookCell {
+  cell_type: string;
+  source: string | string[];
+  outputs?: NotebookOutput[];
+}
+
+interface NotebookOutput {
+  output_type: string;
+  text?: string | string[];
+  data?: Record<string, unknown>;
+}
+
+interface NotebookContent {
+  cells: NotebookCell[];
+}
+
 export class NotebookSecurityCheck implements DataQualityCheck {
   name = "notebook";
 
@@ -15,13 +31,14 @@ export class NotebookSecurityCheck implements DataQualityCheck {
         const nbContent = this.extractNotebookJson(chunk);
         if (!nbContent) continue;
 
-        const cells = Array.isArray(nbContent.cells) ? nbContent.cells : [];
+        const cells: NotebookCell[] = nbContent.cells;
         for (let cellIdx = 0; cellIdx < cells.length; cellIdx++) {
-          const cell = cells[cellIdx] as Record<string, unknown>;
+          const cell = cells[cellIdx];
 
-          // Check for secrets in cell outputs
           if (cell.cell_type === "code") {
-            const source = Array.isArray(cell.source) ? cell.source.join("") : cell.source;
+            const source = Array.isArray(cell.source)
+              ? cell.source.join("")
+              : String(cell.source ?? "");
             if (this.hasSecretPatterns(source)) {
               findings.push({
                 rule: "notebook-secret",
@@ -34,10 +51,12 @@ export class NotebookSecurityCheck implements DataQualityCheck {
             }
           }
 
-          // Check for cell outputs with PII
-          const outputs = cell.outputs || [];
+          const outputs: NotebookOutput[] = cell.outputs ?? [];
           for (const output of outputs) {
-            if (output.output_type === "execute_result" || output.output_type === "stream") {
+            if (
+              output.output_type === "execute_result" ||
+              output.output_type === "stream"
+            ) {
               const text = this.getOutputText(output);
               if (this.containsPII(text)) {
                 findings.push({
@@ -60,11 +79,20 @@ export class NotebookSecurityCheck implements DataQualityCheck {
     return findings;
   }
 
-  private extractNotebookJson(chunk: string): Record<string, unknown> | null {
+  private extractNotebookJson(chunk: string): NotebookContent | null {
     const match = chunk.match(/\{[\s\S]*"cells"[\s\S]*\}/);
     if (!match) return null;
     try {
-      return JSON.parse(match[0]);
+      const parsed = JSON.parse(match[0]) as unknown;
+      if (
+        typeof parsed === "object" &&
+        parsed !== null &&
+        "cells" in parsed &&
+        Array.isArray((parsed as Record<string, unknown>).cells)
+      ) {
+        return parsed as NotebookContent;
+      }
+      return null;
     } catch {
       return null;
     }
@@ -72,25 +100,27 @@ export class NotebookSecurityCheck implements DataQualityCheck {
 
   private hasSecretPatterns(text: string): boolean {
     const patterns = [
-      /api[_-]?key\s*[=:]\s*['""][^'""]*/i,
-      /password\s*[=:]\s*['""][^'""]*/i,
-      /token\s*[=:]\s*['""][^'""]*/i,
+      /api[_-]?key\s*[=:]\s*['"][^'"]+/i,
+      /password\s*[=:]\s*['"][^'"]+/i,
+      /token\s*[=:]\s*['"][^'"]+/i,
     ];
     return patterns.some((p) => p.test(text));
   }
 
-  private getOutputText(output: Record<string, unknown>): string {
+  private getOutputText(output: NotebookOutput): string {
     if (typeof output.text === "string") return output.text;
-    if (Array.isArray(output.text)) return output.text.join("");
+    if (Array.isArray(output.text)) return (output.text as string[]).join("");
     if (typeof output.data === "object" && output.data !== null) {
-      const data = output.data as Record<string, unknown>;
-      if (typeof data["text/plain"] === "string") return data["text/plain"];
+      const plain = output.data["text/plain"];
+      if (typeof plain === "string") return plain;
     }
     return "";
   }
 
   private containsPII(text: string): boolean {
-    return /\b\d{3}-\d{2}-\d{4}\b/.test(text) || // SSN pattern
-      /\b\d{4}[\s-]?\d{4}[\s-]?\d{4}[\s-]?\d{4}\b/.test(text); // Credit card pattern
+    return (
+      /\b\d{3}-\d{2}-\d{4}\b/.test(text) ||
+      /\b\d{4}[\s-]?\d{4}[\s-]?\d{4}[\s-]?\d{4}\b/.test(text)
+    );
   }
 }

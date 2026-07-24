@@ -17,7 +17,7 @@ export class DiffChunker {
       const fileHeader = `--- a/${file.filename}\n+++ b/${file.filename}\n`;
       const fileContent = fileHeader + file.patch;
 
-      if ((currentChunk + fileContent).length > this.maxChunkSize && currentChunk) {
+      if ((currentChunk + fileContent).length >= this.maxChunkSize && currentChunk) {
         chunks.push(currentChunk);
         currentChunk = fileContent;
       } else {
