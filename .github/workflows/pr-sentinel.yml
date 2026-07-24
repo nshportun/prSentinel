@@ -41,6 +41,15 @@ jobs:
       - name: Build
         run: npm run build
 
+      - name: Debug pre-run
+        run: |
+          echo "=== dist contents ==="
+          ls -la dist/ || echo "dist/ NOT FOUND"
+          echo "=== action.yml ==="
+          head -5 action.yml
+          echo "=== node version ==="
+          node --version
+
       - name: Run PR Sentinel
         uses: ./
         with:
