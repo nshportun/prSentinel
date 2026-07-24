@@ -1,5 +1,6 @@
 node_modules/
 # Keep dist/ mostly ignored but track the bundled entrypoint for GitHub Actions
+dist/*.js
 dist/*.js.map
 dist/*.d.ts
 dist/*.d.ts.map

@@ -28,7 +28,7 @@ runs:
     - name: Run PR Sentinel checks
       id: run-sentinel
       shell: bash
-      run: node ${{ github.action_path }}/dist/index.bundled.js
+      run: node ${{ github.action_path }}/dist/index.bundled.cjs
       env:
         INPUT_MODEL_ID: ${{ inputs.model-id }}
         INPUT_SEVERITY_THRESHOLD: ${{ inputs.severity-threshold }}
