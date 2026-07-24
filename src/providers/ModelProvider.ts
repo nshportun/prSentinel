@@ -9,7 +9,9 @@ export interface ModelResponse {
 export interface ModelProviderConfig {
   modelId: string;
   apiKey?: string;
-  region?: string;
+  awsAccessKey?: string;
+  awsSecretKey?: string;
+  awsRegion?: string;
   baseUrl?: string;
 }
 

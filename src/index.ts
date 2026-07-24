@@ -11,18 +11,57 @@ import {
   type DataQualityCheck,
   type Finding,
 } from "./checks/index.js";
+import { AnthropicProvider, BedrockProvider } from "./providers/index.js";
+import type { ModelProvider } from "./providers/index.js";
 import { SARIFGenerator, JSONLGenerator } from "./output/index.js";
+
+/**
+ * Resolve an action input: try core.getInput first (works when the runner
+ * sets INPUT_<NAME> with underscores), then fall back to the raw env vars
+ * that the composite action sets (INPUT_MODEL-ID style with hyphens).
+ */
+function getInput(name: string, fallbackEnv?: string): string {
+  const fromCore = core.getInput(name);
+  if (fromCore) return fromCore;
+  // Composite actions set env vars with the literal input name uppercased
+  const envKey = `INPUT_${name.toUpperCase()}`;
+  const fromEnv = process.env[envKey] ?? "";
+  if (fromEnv) return fromEnv;
+  if (fallbackEnv) return process.env[fallbackEnv] ?? "";
+  return "";
+}
+
+function buildProvider(modelId: string): ModelProvider {
+  const hasAws =
+    process.env.AWS_ACCESS_KEY_ID && process.env.AWS_SECRET_ACCESS_KEY;
+  const hasAnthropic = process.env.ANTHROPIC_API_KEY;
+
+  if (hasAws && !hasAnthropic) {
+    core.info("Using AWS Bedrock provider");
+    return new BedrockProvider({ modelId });
+  }
+  if (hasAnthropic) {
+    core.info("Using Anthropic direct API provider");
+    return new AnthropicProvider({ modelId });
+  }
+  // Default to Bedrock (relies on IAM role / env creds)
+  core.info("No explicit API key found — using AWS Bedrock (IAM/env creds)");
+  return new BedrockProvider({ modelId });
+}
 
 async function run() {
   try {
-    const modelId = core.getInput("model-id");
-    const checksInput = core.getInput("checks") || "pii,secrets,schema";
-    const outputFormat = core.getInput("output-format") || "sarif";
-    const severityThreshold = core.getInput("severity-threshold") || "warning";
-    const githubToken = core.getInput("github-token");
+    const modelId = getInput("model-id");
+    const checksInput = getInput("checks") || "pii,secrets,schema";
+    const outputFormat = getInput("output-format") || "sarif";
+    const severityThreshold = getInput("severity-threshold") || "warning";
+    const githubToken = getInput("github-token", "GITHUB_TOKEN");
 
     if (!modelId) {
-      core.setFailed("model-id input is required");
+      core.setFailed(
+        "model-id input is required. " +
+        "For Bedrock use e.g. anthropic.claude-opus-4-5-20251101-v1:0"
+      );
       return;
     }
 
@@ -48,17 +87,19 @@ async function run() {
     const chunker = new DiffChunker();
     const chunks = chunker.chunk(diff.files);
 
+    const provider = buildProvider(modelId);
+
     const requestedChecks = checksInput.split(",").map((c) => c.trim());
     const checks: Map<string, DataQualityCheck> = new Map();
 
     if (requestedChecks.includes("pii")) {
-      checks.set("pii", new PIIDetectionCheck(modelId));
+      checks.set("pii", new PIIDetectionCheck(modelId, provider));
     }
     if (requestedChecks.includes("secrets")) {
       checks.set("secrets", new SecretScanningCheck());
     }
     if (requestedChecks.includes("schema")) {
-      checks.set("schema", new SchemaDriftCheck(modelId));
+      checks.set("schema", new SchemaDriftCheck(modelId, provider));
     }
     if (requestedChecks.includes("notebook")) {
       checks.set("notebook", new NotebookSecurityCheck());
@@ -87,9 +128,11 @@ async function run() {
 
     // Filter by severity threshold
     const severityOrder = { info: 0, warning: 1, error: 2 };
-    const thresholdLevel = severityOrder[severityThreshold as keyof typeof severityOrder] || 1;
+    const thresholdLevel =
+      severityOrder[severityThreshold as keyof typeof severityOrder] ?? 1;
     const filteredFindings = allFindings.filter(
-      (f) => severityOrder[f.level as keyof typeof severityOrder] >= thresholdLevel
+      (f) =>
+        severityOrder[f.level as keyof typeof severityOrder] >= thresholdLevel
     );
 
     core.info(`Found ${filteredFindings.length} issues`);

@@ -4,14 +4,14 @@ author: "PR Sentinel"
 
 inputs:
   model-id:
-    description: "Model identifier (e.g., claude-opus-4-1)"
+    description: "Model ID. Bedrock: anthropic.claude-opus-4-5-20251101-v1:0  Direct API: claude-opus-4-1"
     required: true
   severity-threshold:
     description: "Minimum severity to report: info, warning, error"
     required: false
     default: "warning"
   checks:
-    description: "Comma-separated list of checks to run: pii,secrets,schema,notebook,license"
+    description: "Comma-separated checks to run: pii,secrets,schema,notebook,license"
     required: false
     default: "pii,secrets,schema"
   output-format:
@@ -24,7 +24,7 @@ inputs:
 
 outputs:
   sarif-file:
-    description: "Path to generated SARIF file (if output-format includes sarif)"
+    description: "Path to generated SARIF file"
     value: ${{ steps.run-sentinel.outputs.sarif-file }}
   jsonl-file:
     description: "Path to generated JSONL evidence log"
@@ -41,11 +41,17 @@ runs:
       run: node ${{ github.action_path }}/dist/index.bundled.js
       shell: bash
       env:
+        # core.getInput reads INPUT_<NAME-UPPERCASED> with hyphens preserved.
+        # We also expose them without hyphens as a fallback in index.ts.
         INPUT_MODEL-ID: ${{ inputs.model-id }}
         INPUT_SEVERITY-THRESHOLD: ${{ inputs.severity-threshold }}
         INPUT_CHECKS: ${{ inputs.checks }}
         INPUT_OUTPUT-FORMAT: ${{ inputs.output-format }}
         INPUT_GITHUB-TOKEN: ${{ inputs.github-token }}
+        # AWS credentials for Bedrock (optional - pass through from caller)
+        AWS_ACCESS_KEY_ID: ${{ env.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ env.AWS_SECRET_ACCESS_KEY }}
+        AWS_REGION: ${{ env.AWS_REGION }}
 
 branding:
   icon: "shield-alert"
