@@ -4,14 +4,14 @@ author: "PR Sentinel"
 
 inputs:
   model-id:
-    description: "Model ID. Bedrock: anthropic.claude-opus-4-5-20251101-v1:0  Direct API: claude-opus-4-1"
+    description: "Model ID (e.g., anthropic.claude-opus-4-5-20251101-v1:0 for Bedrock)"
     required: true
   severity-threshold:
     description: "Minimum severity to report: info, warning, error"
     required: false
     default: "warning"
   checks:
-    description: "Comma-separated checks to run: pii,secrets,schema,notebook,license"
+    description: "Comma-separated checks: pii,secrets,schema,notebook,license"
     required: false
     default: "pii,secrets,schema"
   output-format:
@@ -22,24 +22,13 @@ inputs:
     description: "GitHub token for fetching PR diff"
     required: true
 
-outputs:
-  sarif-file:
-    description: "Path to generated SARIF file"
-    value: ${{ steps.run-sentinel.outputs.sarif-file }}
-  jsonl-file:
-    description: "Path to generated JSONL evidence log"
-    value: ${{ steps.run-sentinel.outputs.jsonl-file }}
-  issue-count:
-    description: "Total number of issues found"
-    value: ${{ steps.run-sentinel.outputs.issue-count }}
-
 runs:
   using: "composite"
   steps:
     - name: Run PR Sentinel checks
       id: run-sentinel
-      run: node ${{ github.action_path }}/dist/index.bundled.js
       shell: bash
+      run: node ${{ github.action_path }}/dist/index.bundled.js
       env:
         INPUT_MODEL_ID: ${{ inputs.model-id }}
         INPUT_SEVERITY_THRESHOLD: ${{ inputs.severity-threshold }}
