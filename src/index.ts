@@ -16,18 +16,32 @@ import type { ModelProvider } from "./providers/index.js";
 import { SARIFGenerator, JSONLGenerator } from "./output/index.js";
 
 /**
- * Resolve an action input: try core.getInput first (works when the runner
- * sets INPUT_<NAME> with underscores), then fall back to the raw env vars
- * that the composite action sets (INPUT_MODEL-ID style with hyphens).
+ * Resolve an action input robustly across both regular and composite action contexts.
+ *
+ * @actions/core getInput(name) reads INPUT_<name.toUpperCase().replace(/ /g,'_')>
+ * (spaces→underscores, hyphens stay as hyphens).
+ *
+ * However, some CI runners / composite action environments silently drop or
+ * remap env keys with hyphens.  We therefore try multiple forms.
  */
 function getInput(name: string, fallbackEnv?: string): string {
+  // 1. Standard @actions/core path (INPUT_MODEL-ID)
   const fromCore = core.getInput(name);
   if (fromCore) return fromCore;
-  // Composite actions set env vars with the literal input name uppercased
-  const envKey = `INPUT_${name.toUpperCase()}`;
-  const fromEnv = process.env[envKey] ?? "";
-  if (fromEnv) return fromEnv;
+
+  // 2. Hyphen form uppercased (INPUT_MODEL-ID)
+  const hyphenKey = `INPUT_${name.toUpperCase()}`;
+  const fromHyphen = process.env[hyphenKey] ?? "";
+  if (fromHyphen) return fromHyphen;
+
+  // 3. Underscore form (INPUT_MODEL_ID) — some runners normalise hyphens
+  const underscoreKey = `INPUT_${name.toUpperCase().replace(/-/g, "_")}`;
+  const fromUnderscore = process.env[underscoreKey] ?? "";
+  if (fromUnderscore) return fromUnderscore;
+
+  // 4. Explicit fallback env var
   if (fallbackEnv) return process.env[fallbackEnv] ?? "";
+
   return "";
 }
 

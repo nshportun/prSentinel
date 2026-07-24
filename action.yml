@@ -41,14 +41,18 @@ runs:
       run: node ${{ github.action_path }}/dist/index.bundled.js
       shell: bash
       env:
-        # core.getInput reads INPUT_<NAME-UPPERCASED> with hyphens preserved.
-        # We also expose them without hyphens as a fallback in index.ts.
+        # Set both hyphen and underscore forms so index.ts finds them
+        # regardless of how the runner normalises env key names.
         INPUT_MODEL-ID: ${{ inputs.model-id }}
+        INPUT_MODEL_ID: ${{ inputs.model-id }}
         INPUT_SEVERITY-THRESHOLD: ${{ inputs.severity-threshold }}
+        INPUT_SEVERITY_THRESHOLD: ${{ inputs.severity-threshold }}
         INPUT_CHECKS: ${{ inputs.checks }}
         INPUT_OUTPUT-FORMAT: ${{ inputs.output-format }}
+        INPUT_OUTPUT_FORMAT: ${{ inputs.output-format }}
         INPUT_GITHUB-TOKEN: ${{ inputs.github-token }}
-        # AWS credentials for Bedrock (optional - pass through from caller)
+        INPUT_GITHUB_TOKEN: ${{ inputs.github-token }}
+        # AWS credentials for Bedrock (passed through from caller workflow env)
         AWS_ACCESS_KEY_ID: ${{ env.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ env.AWS_SECRET_ACCESS_KEY }}
         AWS_REGION: ${{ env.AWS_REGION }}
