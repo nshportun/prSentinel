@@ -1,0 +1,11 @@
+{
+  "database": {
+    "host": "prod-db.example.com",
+    "password": "supersecret123",
+    "api_key": "sk_live_abcdef1234567890"
+  },
+  "model": {
+    "endpoint": "https://api.example.com/v1",
+    "token": "ghp_12345678901234567890123456789012345678"
+  }
+}
