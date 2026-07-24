@@ -10,6 +10,7 @@ on:
       - "**.ipynb"
       - "src/**"
       - "package.json"
+      - "action.yml"
 
 jobs:
   pr-sentinel:
@@ -19,6 +20,11 @@ jobs:
     permissions:
       contents: read
       security-events: write
+
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_KEY }}
+      AWS_REGION: ${{ secrets.AWS_REGION }}
 
     steps:
       - uses: actions/checkout@v4
@@ -32,23 +38,17 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build
-        run: npm run build
-
       - name: Run PR Sentinel
         uses: ./
         with:
-          model-provider: "anthropic"
-          model-id: "claude-opus-4-1"
+          model-id: "us.anthropic.claude-opus-4-5-20251101-v1:0"
           checks: "pii,secrets,schema,notebook,license"
           severity-threshold: "warning"
           output-format: "sarif"
           github-token: ${{ secrets.GITHUB_TOKEN }}
-        env:
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
 
       - name: Upload SARIF report
-        uses: github/codeql-action/upload-sarif@v2
+        uses: github/codeql-action/upload-sarif@v3
         if: always()
         with:
           sarif_file: sarif-report.sarif

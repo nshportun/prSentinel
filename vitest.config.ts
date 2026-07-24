@@ -12,6 +12,7 @@ export default defineConfig({
         "src/**/index.ts",
         "src/index.ts",
         "src/providers/AnthropicProvider.ts",
+        "src/providers/BedrockProvider.ts",
         "src/checks/PIIDetectionCheck.ts",
         "src/checks/SchemaDriftCheck.ts",
         "src/diff/DiffFetcher.ts",

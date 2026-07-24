@@ -1,0 +1,5 @@
+id,name,email,phone,ssn,label
+1,Alice Johnson,alice@example.com,555-123-4567,123-45-6789,positive
+2,Bob Smith,bob.smith@corp.org,555-987-6543,987-65-4321,negative
+3,Carol White,carol@test.net,555-456-7890,456-78-9012,positive
+# v2

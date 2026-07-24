@@ -1,17 +1,17 @@
-name: "PR Sentinel — ML/Data Quality Checks"
+name: "PR Sentinel - ML/Data Quality Checks"
 description: "AI-powered GitHub Action for detecting PII, schema drift, and data-quality issues in diffs"
 author: "PR Sentinel"
 
 inputs:
   model-id:
-    description: "Model identifier (e.g., claude-opus-4-1)"
+    description: "Model ID (e.g., anthropic.claude-opus-4-5-20251101-v1:0 for Bedrock)"
     required: true
   severity-threshold:
     description: "Minimum severity to report: info, warning, error"
     required: false
     default: "warning"
   checks:
-    description: "Comma-separated list of checks to run: pii,secrets,schema,notebook,license"
+    description: "Comma-separated checks: pii,secrets,schema,notebook,license"
     required: false
     default: "pii,secrets,schema"
   output-format:
@@ -22,31 +22,13 @@ inputs:
     description: "GitHub token for fetching PR diff"
     required: true
 
-outputs:
-  sarif-file:
-    description: "Path to generated SARIF file (if output-format includes sarif)"
-  jsonl-file:
-    description: "Path to generated JSONL evidence log"
-  issue-count:
-    description: "Total number of issues found"
-
 runs:
   using: "composite"
   steps:
-    - name: Setup Node
-      uses: actions/setup-node@v4
-      with:
-        node-version: "24"
-
-    - name: Install dependencies
-      run: npm ci
-      shell: bash
-      working-directory: ${{ github.action_path }}
-
     - name: Run PR Sentinel checks
-      run: |
-        node ${{ github.action_path }}/dist/index.js
+      id: run-sentinel
       shell: bash
+      run: node ${{ github.action_path }}/dist/index.bundled.cjs
       env:
         INPUT_MODEL_ID: ${{ inputs.model-id }}
         INPUT_SEVERITY_THRESHOLD: ${{ inputs.severity-threshold }}

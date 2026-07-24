@@ -1,15 +1,19 @@
 import { CheckContext, DataQualityCheck, Finding } from "./types.js";
-import { AnthropicProvider } from "../providers/index.js";
+import { AnthropicProvider } from "../providers/AnthropicProvider.js";
+import type { ModelProvider } from "../providers/ModelProvider.js";
 
 export class SchemaDriftCheck implements DataQualityCheck {
   name = "schema";
-  private provider: AnthropicProvider;
+  private provider: ModelProvider;
 
-  constructor(modelId: string = "claude-3-5-sonnet-20241022") {
-    this.provider = new AnthropicProvider({ modelId });
+  constructor(
+    modelId: string = "claude-3-5-sonnet-20241022",
+    provider?: ModelProvider
+  ) {
+    this.provider = provider ?? new AnthropicProvider({ modelId });
   }
 
-  async run(context: CheckContext, diffChunks: string[]): Promise<Finding[]> {
+  async run(_context: CheckContext, diffChunks: string[]): Promise<Finding[]> {
     const findings: Finding[] = [];
 
     for (let i = 0; i < diffChunks.length; i++) {
