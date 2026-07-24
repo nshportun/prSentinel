@@ -16,30 +16,24 @@ import type { ModelProvider } from "./providers/index.js";
 import { SARIFGenerator, JSONLGenerator } from "./output/index.js";
 
 /**
- * Resolve an action input robustly across both regular and composite action contexts.
+ * Resolve an action input across regular and composite action contexts.
  *
- * @actions/core getInput(name) reads INPUT_<name.toUpperCase().replace(/ /g,'_')>
- * (spaces→underscores, hyphens stay as hyphens).
- *
- * However, some CI runners / composite action environments silently drop or
- * remap env keys with hyphens.  We therefore try multiple forms.
+ * @actions/core getInput(name) reads INPUT_<NAME> where spaces become
+ * underscores but hyphens are preserved. Composite action env blocks
+ * do NOT support keys with hyphens reliably, so action.yml sets the
+ * underscore form (INPUT_MODEL_ID) instead.  We try both here.
  */
 function getInput(name: string, fallbackEnv?: string): string {
-  // 1. Standard @actions/core path (INPUT_MODEL-ID)
+  // 1. core.getInput — works in regular (non-composite) action contexts
   const fromCore = core.getInput(name);
   if (fromCore) return fromCore;
 
-  // 2. Hyphen form uppercased (INPUT_MODEL-ID)
-  const hyphenKey = `INPUT_${name.toUpperCase()}`;
-  const fromHyphen = process.env[hyphenKey] ?? "";
-  if (fromHyphen) return fromHyphen;
-
-  // 3. Underscore form (INPUT_MODEL_ID) — some runners normalise hyphens
+  // 2. Underscore-normalised form set by action.yml composite env block
   const underscoreKey = `INPUT_${name.toUpperCase().replace(/-/g, "_")}`;
   const fromUnderscore = process.env[underscoreKey] ?? "";
   if (fromUnderscore) return fromUnderscore;
 
-  // 4. Explicit fallback env var
+  // 3. Explicit fallback env var (e.g. GITHUB_TOKEN for github-token)
   if (fallbackEnv) return process.env[fallbackEnv] ?? "";
 
   return "";
