@@ -1,4 +1,4 @@
-name: "PR Sentinel — ML/Data Quality Checks"
+name: "PR Sentinel - ML/Data Quality Checks"
 description: "AI-powered GitHub Action for detecting PII, schema drift, and data-quality issues in diffs"
 author: "PR Sentinel"
 
