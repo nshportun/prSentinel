@@ -1,0 +1,12 @@
+{
+  "pipeline": "training-v2",
+  "note": "FAKE TEST DATA for PR Sentinel E2E - not real credentials",
+  "database": {
+    "host": "prod-db.internal",
+    "password": "example_password_for_testing",
+    "api_key": "example_api_key_for_testing_only"
+  },
+  "aws": {
+    "secret_access_key": "example_aws_secret_for_testing_only_not_real"
+  }
+}
