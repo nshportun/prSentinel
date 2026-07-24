@@ -10,6 +10,7 @@ on:
       - "**.ipynb"
       - "src/**"
       - "package.json"
+      - "action.yml"
 
 jobs:
   pr-sentinel:
