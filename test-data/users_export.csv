@@ -1,0 +1,4 @@
+id,name,email,ssn,credit_card,phone
+1,Alice Johnson,alice.johnson@example.com,123-45-6789,4111-1111-1111-1111,555-867-5309
+2,Bob Smith,bob.smith@acme.org,987-65-4321,5500-0055-5555-5559,555-234-5678
+3,Carol Williams,carol@testdata.net,456-78-9012,3782-822463-10005,555-345-6789
