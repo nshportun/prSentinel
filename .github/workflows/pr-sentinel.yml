@@ -41,7 +41,7 @@ jobs:
       - name: Run PR Sentinel
         uses: ./
         with:
-          model-id: "anthropic.claude-opus-4-5-20251101-v1:0"
+          model-id: "us.anthropic.claude-opus-4-5-20251101-v1:0"
           checks: "pii,secrets,schema,notebook,license"
           severity-threshold: "warning"
           output-format: "sarif"
